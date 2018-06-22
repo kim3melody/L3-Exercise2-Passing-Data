@@ -58,7 +58,7 @@ const users = {
     userName: 'user123',
   },
   4: {
-    id: 3,
+    id: 4,
     name: 'John Doe',
     userName: 'user123',
   },
@@ -106,6 +106,7 @@ class App extends Component {
           <h1 className="App-title">ReactND - Coding Practice</h1>
         </header>
         <h2>How Popular is Your Favorite Movie?</h2>
+        <Items className="Items" movies={movies} profiles={profiles} users={users}/>
       </div>
     );
   }
@@ -114,9 +115,40 @@ class App extends Component {
 export default App;
 
 class Items extends Component {
-  render() {
-    return (
-      <h2>{Object.values(this.props.movies).map(movie => movie.name)}</h2>
-    )
-  }
+    render() {
+        console.log();
+        return (
+            <div className="Items">
+                {Object.values(this.props.movies).map(movie => {
+                    const profilesList = this.props.profiles.filter(profile => profile.favoriteMovieID === movie.id.toString());
+                    let pString = "None of the current users liked this movie";
+                    let res;
+                    if(profilesList.length > 0) {
+                        pString = 'Liked By:';
+                        res = <ul key={movie.id.toString()}>
+                                {profilesList.map(profile => {
+                                    const fan = Object.values(this.props.users).filter(user => (
+                                    user.id.toString() === profile.userID
+                                    ));
+                                    if(fan.length >0) {
+                                        console.log(fan[0].id.toString());
+                                        return  <li key={fan[0].id.toString()}>{fan[0].name}</li>
+                                    }
+                                    return null;
+                                 })}
+                            </ul>
+                    }
+                    res = <div key={movie.id.toString()}>
+                            <h2>{movie.name}</h2>
+                            <p>{pString}</p>
+                            {res}
+                          </div>
+                          
+                    console.log(res);
+                    return res;
+                })}               
+            </div>
+        );
+    }
 }
+
